@@ -1,12 +1,16 @@
-import { expect, it } from "vitest";
-import { Equal, Expect } from "../helpers/type-utils";
+import { expect, it } from "vitest"
+import { Equal, Expect } from "../helpers/type-utils"
 
-export const concatenateFirstNameAndLastName = (user: unknown) => {
+export const concatenateFirstNameAndLastName = <
+  T extends Record<"firstName" | "lastName", string>,
+>(
+  user: T
+) => {
   return {
     ...user,
     fullName: `${user.firstName} ${user.lastName}`,
-  };
-};
+  }
+}
 
 it("Should add fullName to an object which only contains firstName and lastName", () => {
   const users = [
@@ -14,9 +18,9 @@ it("Should add fullName to an object which only contains firstName and lastName"
       firstName: "Matt",
       lastName: "Pocock",
     },
-  ];
+  ]
 
-  const newUsers = users.map(concatenateFirstNameAndLastName);
+  const newUsers = users.map(concatenateFirstNameAndLastName)
 
   expect(newUsers).toEqual([
     {
@@ -24,7 +28,7 @@ it("Should add fullName to an object which only contains firstName and lastName"
       lastName: "Pocock",
       fullName: "Matt Pocock",
     },
-  ]);
+  ])
 
   type tests = [
     Expect<
@@ -33,8 +37,8 @@ it("Should add fullName to an object which only contains firstName and lastName"
         Array<{ firstName: string; lastName: string } & { fullName: string }>
       >
     >,
-  ];
-});
+  ]
+})
 
 it("Should retain other properties passed in", () => {
   const users = [
@@ -43,9 +47,9 @@ it("Should retain other properties passed in", () => {
       firstName: "Matt",
       lastName: "Pocock",
     },
-  ];
+  ]
 
-  const newUsers = users.map(concatenateFirstNameAndLastName);
+  const newUsers = users.map(concatenateFirstNameAndLastName)
 
   expect(newUsers).toEqual([
     {
@@ -54,7 +58,7 @@ it("Should retain other properties passed in", () => {
       lastName: "Pocock",
       fullName: "Matt Pocock",
     },
-  ]);
+  ])
 
   type tests = [
     Expect<
@@ -62,23 +66,23 @@ it("Should retain other properties passed in", () => {
         typeof newUsers,
         Array<
           { id: number; firstName: string; lastName: string } & {
-            fullName: string;
+            fullName: string
           }
         >
       >
     >,
-  ];
-});
+  ]
+})
 
 it("Should fail when the object passed in does not contain firstName", () => {
   const users = [
     {
       firstName: "Matt",
     },
-  ];
+  ]
 
   const newUsers = users.map(
     // @ts-expect-error
-    concatenateFirstNameAndLastName,
-  );
-});
+    concatenateFirstNameAndLastName
+  )
+})
