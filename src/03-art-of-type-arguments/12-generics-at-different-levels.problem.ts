@@ -1,12 +1,25 @@
-import { expect, it, describe } from "vitest";
-import { Equal, Expect } from "../helpers/type-utils";
+import { expect, it, describe } from "vitest"
+import { Equal, Expect } from "../helpers/type-utils"
 
-export const getHomePageFeatureFlags = (
-  config: unknown,
-  override: (flags: unknown) => unknown
+type HomePage = {
+  showBanner: boolean
+  showLogOut: boolean
+}
+
+export const getHomePageFeatureFlags = <
+  T extends {
+    rawConfig: {
+      featureFlags: {
+        homePage: HomePage
+      }
+    }
+  },
+>(
+  config: T,
+  override: <U extends HomePage>(flags: U) => U
 ) => {
-  return override(config.rawConfig.featureFlags.homePage);
-};
+  return override(config.rawConfig.featureFlags.homePage)
+}
 
 describe("getHomePageFeatureFlags", () => {
   const EXAMPLE_CONFIG = {
@@ -25,36 +38,36 @@ describe("getHomePageFeatureFlags", () => {
         },
       },
     },
-  };
+  }
   it("Should return the homePage flag object", () => {
     const flags = getHomePageFeatureFlags(
       EXAMPLE_CONFIG,
-      (defaultFlags) => defaultFlags
-    );
+      defaultFlags => defaultFlags
+    )
 
     expect(flags).toEqual({
       showBanner: true,
       showLogOut: false,
-    });
+    })
 
     type tests = [
-      Expect<Equal<typeof flags, { showBanner: boolean; showLogOut: boolean }>>
-    ];
-  });
+      Expect<Equal<typeof flags, { showBanner: boolean; showLogOut: boolean }>>,
+    ]
+  })
 
   it("Should allow you to modify the result", () => {
-    const flags = getHomePageFeatureFlags(EXAMPLE_CONFIG, (defaultFlags) => ({
+    const flags = getHomePageFeatureFlags(EXAMPLE_CONFIG, defaultFlags => ({
       ...defaultFlags,
       showBanner: false,
-    }));
+    }))
 
     expect(flags).toEqual({
       showBanner: false,
       showLogOut: false,
-    });
+    })
 
     type tests = [
-      Expect<Equal<typeof flags, { showBanner: boolean; showLogOut: boolean }>>
-    ];
-  });
-});
+      Expect<Equal<typeof flags, { showBanner: boolean; showLogOut: boolean }>>,
+    ]
+  })
+})
