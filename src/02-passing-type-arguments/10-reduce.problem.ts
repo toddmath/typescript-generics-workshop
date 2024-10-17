@@ -1,5 +1,5 @@
-import { expect, it } from "vitest";
-import { Equal, Expect } from "../helpers/type-utils";
+import { expect, it } from "vitest"
+import { Equal, Expect } from "../helpers/type-utils"
 
 const array = [
   {
@@ -8,12 +8,12 @@ const array = [
   {
     name: "Steve",
   },
-];
+]
 
-const obj = array.reduce((accum, item) => {
-  accum[item.name] = item;
-  return accum;
-}, {});
+const obj = array.reduce<Record<string, (typeof array)[number]>>((accum, item) => {
+  accum[item.name] = item
+  return accum
+}, {})
 
 it("Should resolve to an object where name is the key", () => {
   expect(obj).toEqual({
@@ -23,7 +23,7 @@ it("Should resolve to an object where name is the key", () => {
     Steve: {
       name: "Steve",
     },
-  });
+  })
 
-  type tests = [Expect<Equal<typeof obj, Record<string, { name: string }>>>];
-});
+  type tests = [Expect<Equal<typeof obj, Record<string, { name: string }>>>]
+})
